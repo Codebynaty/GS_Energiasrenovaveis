@@ -16,7 +16,7 @@ Demonstrar como práticas sustentáveis contribuem para o futuro do trabalho.
 
 📄 README.md               # Documentação principal do projeto
 
-📄 Relatorio_Analise_Energetica_OpA.docx  # Relatório completo (gerado)
+📄 Relatorio_Analise_Energetica_OpA.docx  # Relatório completo 
 
 📓 notebooks/
 analise_energetica.ipynb  # Código completo da análise
@@ -27,7 +27,7 @@ apresentacao.pptx         # Slides prontos da Global Solution
 
 📁 resultados/
 graficos/                 # PNGs gerados na análise
-tabelas/                  # Tabelas exportadas
+tabelas/                  # Tabela ficticia que utilizamos
 
 ⚙️ Tecnologias Utilizadas
 
