@@ -16,7 +16,7 @@ Demonstrar como práticas sustentáveis contribuem para o futuro do trabalho.
 
 📄 README.md               # Documentação principal do projeto
 
-📄 Relatorio_Analise_Energetica_OpA.docx  # Relatório completo 
+📄 Relatorio_Analise_Energetica_gs.docx  # Relatório completo 
    
 📓 notebooks/
 
