@@ -21,90 +21,110 @@ Demonstrar como práticas sustentáveis contribuem para o futuro do trabalho.
 📓 notebooks/
 analise_energetica.ipynb  # Código completo da análise
 visualizacoes.ipynb       # Gráficos complementares
-├── 📁 slides/
-│   └── apresentacao.pptx         # Slides prontos da Global Solution
-└── 📁 resultados/
-    ├── graficos/                 # PNGs gerados na análise
-    └── tabelas/                  # Tabelas exportadas
+
+📁 slides/
+apresentacao.pptx         # Slides prontos da Global Solution
+
+📁 resultados/
+graficos/                 # PNGs gerados na análise
+tabelas/                  # Tabelas exportadas
+
 ⚙️ Tecnologias Utilizadas
+
 Python 3.10+
+
 Pandas — manipulação e transformação de dados
+
 NumPy — cálculos e operações avançadas
+
 Matplotlib / Plotly — visualizações
+
 Scikit-learn — detecção de anomalias (Isolation Forest)
+
 Jupyter Notebook — documentação e execução do pipeline
+
 📊 Principais Análises Realizadas
-Perfil de carga diária e horária
-Identificação de picos e horários críticos
-Análise por área: Escritório, Sala de Reunião e DataCenter
-Estimativa de desperdícios
-Detecção de anomalias (ML)
-Simulações de economia energética
-Cálculo de impacto ambiental (CO₂)
-Estimativa de economia anual e payback
+
+- Perfil de carga diária e horária
+- Identificação de picos e horários críticos
+- Análise por área: Escritório, Sala de Reunião e DataCenter
+- Estimativa de desperdícios
+- Detecção de anomalias (ML)
+- Simulações de economia energética
+- Cálculo de impacto ambiental (CO₂)
+- Estimativa de economia anual e payback
+  
 🌱 Principais Resultados
-Consumo total analisado: ~6.729 kWh (90 dias)
 
-Maior consumidor: DataCenter (carga contínua 24h)
-
-Pico médio diário: 14h
-
-+50 anomalias detectadas, apontando uso indevido ou falhas operacionais
-
-Economia anual estimada com intervenções:
-
-Redução significativa de kWh
-Economia financeira anual
-Mais de 620 kg de CO₂ evitados por ano
-Intervenções priorizadas:
+- Consumo total analisado: ~6.729 kWh (90 dias)
+- Maior consumidor: DataCenter (carga contínua 24h)
+- Pico médio diário: 14h
+- +50 anomalias detectadas, apontando uso indevido ou falhas operacionais
+- Economia anual estimada com intervenções:
+- Redução significativa de kWh
+- Economia financeira anual
+- Mais de 620 kg de CO₂ evitados por ano
+- Intervenções priorizadas:
 
 Retrofit LED
-Otimização HVAC (DataCenter)
-Redução de standby
+  - Otimização HVAC (DataCenter)
+  - Redução de standby
+    
 📈 Como Executar a Análise
-Clone este repositório:
-git clone https://github.com/usuario/Global-Solution-Energia.git
-Entre no diretório:
-cd Global-Solution-Energia
-Crie o ambiente virtual (opcional):
-python -m venv venv
-source venv/bin/activate   # Linux/Mac
-venv\Scripts\activate      # Windows
-Instale as dependências:
+
+- Clone este repositório: git clone https://github.com/usuario/Global-Solution-Energia.git
+- Entre no diretório: cd Global-Solution-Energia
+- Crie o ambiente virtual (opcional):
+  python -m venv venv
+  source venv/bin/activate   # Linux/Mac
+  venv\Scripts\activate      # Windows
+  
+- Instale as dependências:
 pip install -r requirements.txt
-Execute o notebook:
+
+- Execute o notebook:
 jupyter notebook notebooks/analise_energetica.ipynb
+
 🧠 Metodologias Aplicadas
+
 🔹 Análises Estatísticas
-Agregações
-Médias móveis
-Correlações
+- Agregações
+- Médias móveis
+- Correlações
+  
 🔹 Economia e Sustentabilidade
-Cálculo de economia (kWh + R$)
-Cálculo de emissão evitada (kg CO₂)
-Priorização baseada em payback
+
+- Cálculo de economia (kWh + R$)
+- Cálculo de emissão evitada (kg CO₂)
+- Priorização baseada em payback
+  
 🖼️ Visualizações Incluídas
-Gráficos de linha e barras (consumo horário e diário)
-Heatmaps por dia/hora
-Gráficos comparativos antes/depois
-Destaques visuais das anomalias
+
+- Gráficos de linha e barras (consumo horário e diário)
+- Heatmaps por dia/hora
+- Gráficos comparativos antes/depois
+- Destaques visuais das anomalias
+  
 📑 Relatório Completo
 O documento em .docx inclui:
 
-Explicação detalhada de cada etapa
-Resultados completos
-Tabelas e interpretações
-Conclusão e recomendações práticas
-Arquivo: Relatorio_Analise_Energetica_OpA.docx
+- Explicação detalhada de cada etapa
+- Resultados completos
+- Tabelas e interpretações
+- Conclusão e recomendações práticas
+- Arquivo: Relatorio_Analise_Energetica_OpA.docx
 
 🎥 Slides da Apresentação
+
 Disponíveis em /slides/apresentacao.pptx, incluindo:
 
-Introdução
-Metodologia
-Resultados
-Gráficos
+- Introdução
+- Metodologia
+- Resultados
+- Gráficos
+- 
 Recomendações finais
+
 🤝 Contribuições
 Contribuições são bem-vindas! Envie sua issue ou pull request para melhorias e novas análises.
 
