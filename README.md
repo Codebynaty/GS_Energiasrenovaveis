@@ -20,7 +20,7 @@ Demonstrar como práticas sustentáveis contribuem para o futuro do trabalho.
    
 📓 notebooks/
 
-analise_energetica.ipynb  # Código completo da análise4
+análise_energética.ipynb  # Código completo da análise4
 
 visualizacoes.ipynb       # Gráficos complementares
 
