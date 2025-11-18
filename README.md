@@ -72,8 +72,8 @@ Retrofit LED
     
 📈 Como Executar a Análise
 
-- Clone este repositório: git clone https://github.com/usuario/Global-Solution-Energia.git
-- Entre no diretório: cd Global-Solution-Energia
+- Clone este repositório: git clone (https://github.com/Codebynaty/GS_Energiasrenovaveis) 
+- Entre no diretório: GS_Energiasrenovaveis_analise
 - Crie o ambiente virtual (opcional):
   python -m venv venv
   source venv/bin/activate   # Linux/Mac
@@ -106,7 +106,7 @@ jupyter notebook notebooks/analise_energetica.ipynb
 - Destaques visuais das anomalias
   
 📑 Relatório Completo
-O documento em .docx inclui:
+O documento em (https://fiapcom-my.sharepoint.com/:w:/g/personal/rm568570_fiap_com_br/IQAr508g4ieyT4QW708ZhOCIARzw6P-O7PZhvw86YnoZXqc?e=Eq0nSr) inclui:
 
 - Explicação detalhada de cada etapa
 - Resultados completos
