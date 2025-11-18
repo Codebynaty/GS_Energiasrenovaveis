@@ -1,0 +1,141 @@
+# Notebook: Analise_Energetica_Op_A.ipynb
+# Requer: pandas, numpy, matplotlib, scikit-learn
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.ensemble import IsolationForest
+import datetime
+import math
+
+# ---------- Configurações / suposições (ajuste conforme necessário) ----------
+TARIFFA_R_KWH = 0.80         # R$ por kWh (exemplo)
+CO2_KG_PER_KWH = 0.095       # kgCO2 por kWh (hipótese — documente a fonte)
+INVESTMENT_LED_R = 2000.0    # custo hipotético para retrofit de iluminação (R$)
+INVESTMENT_HVAC_R = 5000.0   # custo hipotético para otimização HVAC (R$)
+INVESTMENT_STANDBY_R = 500.0 # custo hipotético para eliminar standby (pequenas ações)
+DAYS = 90                    # janela de dados simulados
+AREAS = ["Escritorio", "Sala_Reuniao", "DataCenter"]
+np.random.seed(42)
+
+# ---------- 1) Gerar dataset horário simulado ----------
+start = pd.Timestamp("2025-08-01 00:00:00")
+periods = DAYS * 24
+idx = pd.date_range(start, periods=periods, freq="H")
+rows = []
+for ts in idx:
+    hour = ts.hour
+    weekday = ts.weekday()
+    is_weekend = 1 if weekday >= 5 else 0
+    base_occupancy = 0
+    if 8 <= hour <= 18 and not is_weekend:
+        base_occupancy = np.random.poisson(12)
+    elif 9 <= hour <= 17 and is_weekend:
+        base_occupancy = np.random.poisson(2)
+    for area in AREAS:
+        if area == "Escritorio":
+            lighting = 0.15 + 0.10 * (1 if 7 <= hour <= 19 else 0)
+            hvac = 0.30 + 0.20 * (1 if 8 <= hour <= 18 else 0)
+            equip = 0.25 + 0.15 * (1 if 8 <= hour <= 18 else 0)
+            other = 0.02
+            occupancy = base_occupancy
+        elif area == "Sala_Reuniao":
+            lighting = 0.08 + 0.06 * (1 if 8 <= hour <= 20 else 0)
+            hvac = 0.12 + 0.10 * (1 if 8 <= hour <= 20 else 0)
+            equip = 0.05 + 0.04 * (1 if 8 <= hour <= 20 else 0)
+            other = 0.01
+            occupancy = np.random.binomial(1, 0.15) * np.random.randint(1,8)
+        else: # DataCenter
+            lighting = 0.05
+            hvac = 0.8
+            equip = 1.2 + 0.1 * np.sin(2*math.pi*(ts.timetuple().tm_yday)/365.0)
+            other = 0.05
+            occupancy = 1
+
+        lighting_kwh = max(0, np.random.normal(loc=lighting, scale=0.02))
+        hvac_kwh = max(0, np.random.normal(loc=hvac, scale=0.05))
+        equip_kwh = max(0, np.random.normal(loc=equip, scale=0.05))
+        other_kwh = max(0, np.random.normal(loc=other, scale=0.01))
+        total_kwh = lighting_kwh + hvac_kwh + equip_kwh + other_kwh
+        rows.append({
+            "timestamp": ts,
+            "area": area,
+            "occupancy": occupancy,
+            "lighting_kwh": lighting_kwh,
+            "hvac_kwh": hvac_kwh,
+            "equip_kwh": equip_kwh,
+            "other_kwh": other_kwh,
+            "total_kwh": total_kwh
+        })
+
+df = pd.DataFrame(rows).set_index("timestamp")
+
+# ---------- 2) Métricas gerais ----------
+total_consumption_kwh = df["total_kwh"].sum()
+consumption_by_area = df.groupby("area")["total_kwh"].sum()
+consumption_pct_area = (consumption_by_area / total_consumption_kwh * 100).round(2)
+hourly_profile = df.groupby([df.index.hour, "area"])["total_kwh"].mean().unstack()
+hourly_sum = df.groupby(df.index.hour)["total_kwh"].mean()
+peak_hour = hourly_sum.idxmax()
+peak_value = hourly_sum.max()
+mean_by_area = df.groupby("area")["total_kwh"].mean()
+peak_by_area = df.groupby([df.index.hour, "area"])["total_kwh"].mean().groupby("area").max()
+fator_carga = (mean_by_area / peak_by_area).replace([np.inf, -np.inf], np.nan).fillna(0)
+
+# ---------- 3) Detecção de anomalias ----------
+feat = df.reset_index()
+feat["hour"] = feat["timestamp"].dt.hour
+feat["weekday"] = feat["timestamp"].dt.weekday
+clf = IsolationForest(contamination=0.01, random_state=42)
+feat["anom"] = clf.fit_predict(feat[["total_kwh", "hour", "weekday"]])
+anom_df = feat[feat["anom"] == -1]
+anom_summary = anom_df.groupby("area")["total_kwh"].agg(["count", "mean", "max"]).sort_values("count", ascending=False)
+
+# ---------- 4) Identificar desperdícios e estimar intervenções ----------
+components = df.groupby("area")[["lighting_kwh","hvac_kwh","equip_kwh","other_kwh"]].sum()
+components_pct = components.div(components.sum(axis=1), axis=0).round(3) * 100
+reductions = {
+    "LED": {"component":"lighting_kwh", "reduction_pct":0.50, "invest": INVESTMENT_LED_R},
+    "HVAC_Opt": {"component":"hvac_kwh", "reduction_pct":0.15, "invest": INVESTMENT_HVAC_R},
+    "Standby": {"component":"equip_kwh", "reduction_pct":0.20, "invest": INVESTMENT_STANDBY_R}
+}
+intervention_results = []
+for area in AREAS:
+    area_df = df[df["area"] == area]
+    baseline_area = area_df["total_kwh"].sum()
+    for name, v in reductions.items():
+        comp = v["component"]
+        reduction_pct = v["reduction_pct"]
+        invest = v["invest"] * (1 if area!="DataCenter" else 1.5)
+        comp_sum = area_df[comp].sum()
+        econom_kwh = comp_sum * reduction_pct
+        econom_R = econom_kwh * TARIFFA_R_KWH
+        intervention_results.append({
+            "area": area,
+            "intervention": name,
+            "component_sum_kwh": round(comp_sum,2),
+            "econom_kwh": round(econom_kwh,2),
+            "econom_R$": round(econom_R,2),
+            "invest_R$": round(invest,2),
+        })
+interv_df = pd.DataFrame(intervention_results)
+interv_df["econom_kwh_annual"] = (interv_df["econom_kwh"] / DAYS) * 365
+interv_df["econom_R$_annual"] = interv_df["econom_kwh_annual"] * TARIFFA_R_KWH
+interv_df["payback_years"] = (interv_df["invest_R$"] / interv_df["econom_R$_annual"]).replace([np.inf, -np.inf], np.nan).round(2)
+interv_df["CO2_kg_annual"] = interv_df["econom_kwh_annual"] * CO2_KG_PER_KWH
+
+# ---------- 5) Outputs principais (salvar/mostrar) ----------
+print("Resumo rápido:")
+print(f"Janela de dados: {DAYS} dias ({idx.min().date()} a {idx.max().date()})")
+print(f"Consumo total simulado: {total_consumption_kwh:.2f} kWh")
+print("Consumo por area (kWh):")
+print(consumption_by_area)
+print("\nComponentes por area (kWh totals):")
+print(components)
+print("\nIntervenções (resumo):")
+print(interv_df[["area","intervention","econom_kwh_annual","econom_R$_annual","invest_R$","payback_years","CO2_kg_annual"]])
+
+# Salvar CSVs
+df.to_csv("dados_simulados_horarios.csv")
+consumption_by_area.to_csv("consumo_por_area.csv")
+interv_df.to_csv("interv_estimates.csv")
