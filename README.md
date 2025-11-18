@@ -26,7 +26,7 @@ GoogleColab     # Gráficos complementares
 
 📁 slides/
 
-apresentacao.pptx         # Slides prontos da Global Solution
+(https://www.canva.com/design/DAG5FneNIks/WK6O-94OhhSeo8MeCMfwEw/edit?utm_content=DAG5FneNIks&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)      # Slides prontos da Global Solution
                   
 
 ⚙️ Tecnologias Utilizadas
